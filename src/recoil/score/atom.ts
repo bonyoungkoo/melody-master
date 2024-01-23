@@ -3,11 +3,8 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const scoreState = atom({
-  key: 'scoreState',
-  default: {
-    playTime: null,
-    numberOfAnswer: null
-  },
+export const numberOfAnswerState = atom({
+  key: 'numberOfAnswerState',
+  default: 0,
   effects_UNSTABLE: [persistAtom]
 })

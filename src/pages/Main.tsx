@@ -5,19 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import Logo from '../assets/vinyl_logo.png';
 import { youtubeState } from "../recoil/youtube/atom";
+import { numberOfAnswerState } from "../recoil/score/atom";
 
 const Main = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const youtube = useRecoilValue(youtubeState);
+  const setScore = useSetRecoilState(numberOfAnswerState);
   const setYoutube = useSetRecoilState(youtubeState);
-  // const youtubeList = useRecoilValue(youtubeState);
 
   const onClickGameStartButton = useCallback(async () => {
     setIsLoading(true);
-    const youtubeAPI = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=PLberYIcFsD68X_8bqTlwivUWTF4llVlBb&key=AIzaSyBFvVdPJQvzgcOBm1C1GLItXpOudlxZ6Cg'
+    const youtubeApiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=PLberYIcFsD68X_8bqTlwivUWTF4llVlBb&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`
     const response: any = await axios({
-      url: youtubeAPI,
+      url: youtubeApiUrl,
       method: 'get',
     });
     setIsLoading(false);
@@ -25,6 +25,7 @@ const Main = () => {
       initialList: response.data.items,
       currentList: response.data.items
     });
+    setScore(0);
     console.log(response);
     navigate('/challenge');
   }, [])

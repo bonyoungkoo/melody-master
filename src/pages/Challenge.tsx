@@ -1,19 +1,27 @@
 import StarIcon from '@mui/icons-material/Star';
-import { Box, Button, Container, FormControlLabel, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
+import { Box, Button, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import VinylIcon from '../assets/vinyl_plain.png';
+import { useCountdown } from '../hooks/useCountdown';
+import { numberOfAnswerState } from '../recoil/score/atom';
 import { youtubeState } from "../recoil/youtube/atom";
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 const Challenge = () => {
+  const TIME_LIMIT = 1200;
+  const {timeLeft, start, stop, reset} = useCountdown(TIME_LIMIT);
   const [onPlayer, setOnPlayer] = useState(false);
   const [onChangeState, setOnChangeState] = useState(false);
   const [onPlay, setOnPlay] = useState(false);
-  const [onReady, setOnReady] = useState(false);
+  const [hasPlayed, setHasPlayed] = useState(false);
   const [onSelect, setOnSelect] = useState(false);
   const videoList = useRecoilValue(youtubeState);
   const setYoutube = useSetRecoilState(youtubeState);
+  const score = useRecoilValue(numberOfAnswerState);
+  const setScore = useSetRecoilState(numberOfAnswerState);
   const [player, setPlayer] = useState<any>();
   const [value, setValue] = useState<string>('');
   const [answer, setAnswer] = useState<any>();
@@ -26,15 +34,35 @@ const Challenge = () => {
       'rel': 0, 
 
     }
-  } 
+  }
 
   useEffect(() => {
+    console.log('score', score);
+    console.log('onChangeState', onChangeState);
+  }, []);
+
+  useEffect(() => {
+    start();
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      console.log('time over!')
+      stop();
+    }
+  }, [timeLeft]);
+
+  useEffect(() => {
+    getYoutubeVideo();
+  }, [])
+
+  const getYoutubeVideo = useCallback(() => {
     console.log(videoList)
     const randomList = getRandomIntegerList(5).map((v) => videoList.currentList[v]);
     setChoiceList(randomList.map((v) => v.snippet.title));
     const randomInteger = getRandomInteger(5);
     setAnswer(randomList[randomInteger]);
-  }, [])
+  }, [videoList]);
 
   const getRandomInteger = (max: number) => {
     return Math.floor(Math.random() * max);
@@ -57,35 +85,45 @@ const Challenge = () => {
   }, []);
 
   const clickReady = useCallback(() => {
-    if (!onReady && !onPlay) {
+    if (!hasPlayed && !onPlay) {
       player.seekTo(19);
       player.playVideo();
       setOnPlay(true);
       setTimeout(() => {
         player.pauseVideo();
         setOnPlay(false);
-        setOnReady(true);
+        setHasPlayed(true);
       }, 3000)
     }
-  }, [player, onPlayer, onReady, onPlay]);
+  }, [player, onPlayer, hasPlayed, onPlay]);
 
   const clickNext = useCallback(() => {
     if (!onSelect) return;
-    console.log('aaa')
     player.pauseVideo();
     setYoutube({
       initialList: videoList.initialList,
       currentList: videoList.currentList.toSpliced(videoList.currentList.findIndex((v: any) => v.id === answer.id), 1)
     });
-    location.reload();
-  }, [player, onSelect, videoList, answer]);
+    console.log(answer)
+    console.log(value)
+    if (answer.snippet.title === value) {
+      setScore((prev: number) => prev + 1)
+    }
+    setOnChangeState(false);
+    getYoutubeVideo();
+    setHasPlayed(false);
+    setOnPlay(false);
+    setOnSelect(false);
+    setValue('');
+
+  }, [player, onSelect, videoList, answer, value]);
 
   return (
     <>
       <RatingContainer>
         <Rating 
           name="read-only" 
-          value={4} 
+          value={Math.floor(score/3) + 1} 
           max={5}
           emptyIcon={<EmptyStartIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
           readOnly
@@ -101,7 +139,7 @@ const Challenge = () => {
       </PlayingContainer>
       <ButtonContainer>
         {
-          !onReady && onPlayer && answer && onChangeState &&
+          !hasPlayed && onPlayer && answer && onChangeState &&
           <ReadyButton variant="contained" onClick={() => {
             console.log(answer.snippet.resourceId.videoId);
             clickReady()
@@ -116,7 +154,7 @@ const Challenge = () => {
       </ButtonContainer>
       <RadioContainer>
         {
-          onReady &&
+          hasPlayed &&
           <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
@@ -134,11 +172,24 @@ const Challenge = () => {
           </RadioGroup>
         }
       </RadioContainer>
+      <ProgressContainer>
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress variant="determinate" value={100/TIME_LIMIT*(TIME_LIMIT-timeLeft)} />
+        </Box>
+      </ProgressContainer>
     </>
   );
 };
 
+const ProgressContainer = styled(Box)`
+  display: flex;
+  align-items: end;
+  height: 10%;
+  max-width: 1000px;
+`
+
 const RadioContainer = styled(Container)`
+  height: 40%;
   padding: 16px 48px;
 `
 
@@ -189,12 +240,6 @@ const EmptyStartIcon = styled(StarIcon)`
   color: grey;
 `
 
-const RatingContainer = styled(Container)`
-  height: 10%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
 const PlayingContainer = styled(Container)`
   position: relative;
   height: 30%;
@@ -210,6 +255,13 @@ const rotate = keyframes`
   100% {
     transform: rotate(360deg);
   }
+`
+
+const RatingContainer = styled(Container)`
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const PlayingIcon = styled(Box)`

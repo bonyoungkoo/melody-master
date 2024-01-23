@@ -1,12 +1,12 @@
 import { selector } from "recoil";
-import { scoreState } from "./atom";
+import { numberOfAnswerState } from "./atom";
 
-export default selector({
-  key: "scoreSelector",
+export const numberOfAnswerSelector = selector({
+  key: "numberOfAnswerSelector",
   get: ({get}) => {
-    return get(scoreState);
+    return get(numberOfAnswerState);
   },
   set: ({set}, newValue: any) => {
-    set(scoreState, newValue);
+    set(numberOfAnswerState, newValue);
   }
 })
