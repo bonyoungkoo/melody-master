@@ -1,10 +1,14 @@
 import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 import axios from 'axios';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Rank = () => {
+  const location = useLocation();
+  const [rankData, setRankData] = useState([]);
 
   useEffect(() => {
+    console.log(location.state?.name);
     getRanking();
   }, []);
 
@@ -18,7 +22,7 @@ const Rank = () => {
     if (!response.data) {
       alert('An error occured!')
     }
-
+    setRankData(response.data);
   }, []);
 
   return (
@@ -41,24 +45,33 @@ const Rank = () => {
             </TableHead>
             <TableBody>
               {
-                Array(10).fill(null).map((v, i) => 
+                rankData?.length && 
+                rankData.map((v: any, i: number) => 
+                // Array(10).fill(null).map((v, i) => 
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={i}>
                     <TableCell sx={{ color: '#FFFFFF' }} align="center">{i + 1}</TableCell>
-                    <TableCell sx={{ color: '#FFFFFF' }} align="left">{`홍길동홍길동동${i}`}</TableCell>
-                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{20 - i}</TableCell>
-                    <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{10000 - i * 1000}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="left">{v.name}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{v.hit}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{v.miss}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{v.score}</TableCell>
                   </TableRow>
                 )
               }
+              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell sx={{ color: 'yellow' }} align="center">-</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="left">{location.state?.name ?? '-'}</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">10</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">1</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">{1000}</TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
       </RankContainer>
       <ButtonContainer>
-        <GameButton variant="text" onClick={() => {}}>
+        {/* <GameButton variant="text" onClick={() => {}}>
           Enroll My Score
-        </GameButton>
+        </GameButton> */}
         <GameButton variant="text" onClick={() => {}}>
           Go To Main
         </GameButton>

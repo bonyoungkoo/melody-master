@@ -57,7 +57,11 @@ const Result = () => {
       alert('An error occured!')
     }
 
-    navigate('/rank')
+    navigate('/rank', { 
+      state: {
+        name: value
+      }
+    });
 
   }, [numberOfHit, numberOfMiss, value]);
 
