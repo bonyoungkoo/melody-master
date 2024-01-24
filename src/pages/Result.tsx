@@ -56,20 +56,20 @@ const Result = () => {
       }
     });
 
-    // setIsLoading(false);
+    setIsLoading(false);
 
-    // if (!response.data) {
-    //   alert('An error occured!')
-    // }
+    if (!response.data) {
+      alert('An error occured!')
+    }
 
-    // navigate('/rank', { 
-    //   state: {
-    //     name: value,
-    //     hit: numberOfHit,
-    //     miss: numberOfMiss,
-    //     score: calculateScore()
-    //   }
-    // });
+    navigate('/rank', { 
+      state: {
+        name: value,
+        hit: numberOfHit,
+        miss: numberOfMiss,
+        score: calculateScore()
+      }
+    });
 
   }, [numberOfHit, numberOfMiss, value]);
 
