@@ -12,7 +12,7 @@ import { numberOfMissSelector } from '../recoil/score/selector';
 
 const Challenge = () => {
   const navigate = useNavigate();
-  const TIME_LIMIT = 1200;
+  const TIME_LIMIT = 1500;
   const {timeLeft, start, stop, reset} = useCountdown(TIME_LIMIT);
   const [onPlayer, setOnPlayer] = useState(false);
   const [onChangeState, setOnChangeState] = useState(false);
