@@ -2,15 +2,15 @@ import { Box, Button, styled } from "@mui/material";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import Logo from '../assets/vinyl_logo.png';
+import { numberOfAHitState } from "../recoil/score/atom";
 import { youtubeState } from "../recoil/youtube/atom";
-import { numberOfAnswerState } from "../recoil/score/atom";
 
 const Main = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const setScore = useSetRecoilState(numberOfAnswerState);
+  const setHitScore = useSetRecoilState(numberOfAHitState);
   const setYoutube = useSetRecoilState(youtubeState);
 
   const onClickGameStartButton = useCallback(async () => {
@@ -25,7 +25,7 @@ const Main = () => {
       initialList: response.data.items,
       currentList: response.data.items
     });
-    setScore(0);
+    setHitScore(0);
     console.log(response);
     navigate('/challenge');
   }, [])

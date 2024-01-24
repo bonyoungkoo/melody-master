@@ -1,17 +1,18 @@
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Button, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import VinylIcon from '../assets/vinyl_plain.png';
 import { useCountdown } from '../hooks/useCountdown';
-import { numberOfAnswerState } from '../recoil/score/atom';
+import { numberOfAHitState } from '../recoil/score/atom';
 import { youtubeState } from "../recoil/youtube/atom";
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
+import { numberOfMissSelector } from '../recoil/score/selector';
 
 const Challenge = () => {
-  const TIME_LIMIT = 1200;
+  const navigate = useNavigate();
+  const TIME_LIMIT = 100;
   const {timeLeft, start, stop, reset} = useCountdown(TIME_LIMIT);
   const [onPlayer, setOnPlayer] = useState(false);
   const [onChangeState, setOnChangeState] = useState(false);
@@ -20,8 +21,9 @@ const Challenge = () => {
   const [onSelect, setOnSelect] = useState(false);
   const videoList = useRecoilValue(youtubeState);
   const setYoutube = useSetRecoilState(youtubeState);
-  const score = useRecoilValue(numberOfAnswerState);
-  const setScore = useSetRecoilState(numberOfAnswerState);
+  const score = useRecoilValue(numberOfAHitState);
+  const setHitScore = useSetRecoilState(numberOfAHitState);
+  const setMissScore = useSetRecoilState(numberOfMissSelector);
   const [player, setPlayer] = useState<any>();
   const [value, setValue] = useState<string>('');
   const [answer, setAnswer] = useState<any>();
@@ -49,6 +51,7 @@ const Challenge = () => {
     if (timeLeft <= 0) {
       console.log('time over!')
       stop();
+      navigate('/result');
     }
   }, [timeLeft]);
 
@@ -84,39 +87,68 @@ const Challenge = () => {
     setOnPlayer(true);
   }, []);
 
-  const clickReady = useCallback(() => {
+  const setDuration = useCallback((score: number) => {
+    if (score/3 >= 4) {
+      return 1000 - (score/3*50);
+    }
+    return 5000 - (score/3)*1000;
+  }, []);
+
+  const clickPlay = useCallback(() => {
     if (!hasPlayed && !onPlay) {
-      player.seekTo(19);
+      player.seekTo(getRandomInteger(120) + 10);
       player.playVideo();
       setOnPlay(true);
       setTimeout(() => {
         player.pauseVideo();
         setOnPlay(false);
         setHasPlayed(true);
-      }, 3000)
+      }, setDuration(score))
     }
-  }, [player, onPlayer, hasPlayed, onPlay]);
+  }, [player, onPlayer, hasPlayed, onPlay, score]);
 
   const clickNext = useCallback(() => {
     if (!onSelect) return;
+    setOnChangeState(false);
+    setHasPlayed(false);
+    setOnPlay(false);
+    setOnSelect(false);
     player.pauseVideo();
     setYoutube({
       initialList: videoList.initialList,
       currentList: videoList.currentList.toSpliced(videoList.currentList.findIndex((v: any) => v.id === answer.id), 1)
     });
-    console.log(answer)
-    console.log(value)
     if (answer.snippet.title === value) {
-      setScore((prev: number) => prev + 1)
+      setHitScore((prev: number) => prev + 1)
+    } else {
+      setMissScore((prev: number) => prev + 1)
     }
-    setOnChangeState(false);
     getYoutubeVideo();
-    setHasPlayed(false);
-    setOnPlay(false);
-    setOnSelect(false);
     setValue('');
 
   }, [player, onSelect, videoList, answer, value]);
+
+  const setColor = useCallback((score: number) => {
+    let color = '#ff1744';
+    switch (Math.floor(score/3)) {
+      case 0:
+        color = '#ffc107' 
+        break;
+      case 1:
+        color = '#ff9800' 
+        break;
+      case 2:
+        color = '#ff5722' 
+        break;
+      case 3:
+        color = '#f44336' 
+        break;
+      case 4:
+        color = '#ff1744' 
+        break;
+    }
+    return color;
+  }, [score]);
 
   return (
     <>
@@ -125,25 +157,28 @@ const Challenge = () => {
           name="read-only" 
           value={Math.floor(score/3) + 1} 
           max={5}
+          icon={<StarIcon fontSize="inherit" sx={{ color: setColor(score) }} />}
           emptyIcon={<EmptyStartIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
           readOnly
           size={"large"} />
       </RatingContainer>
       <PlayingContainer>
-        <PlayingIcon sx={{ animationPlayState: onPlay ? '' : 'paused' }} />
+        <PlayingIcon sx={{ animationPlayState: onPlay ? '' : 'paused' }} onClick={() => console.log(onPlayer, onChangeState, onPlay, hasPlayed, onSelect)} />
         {
           onPlay &&
           <AlbumIcon sx={{ animationPlayState: onPlay ? '' : 'paused', backgroundImage: `url(${answer?.snippet.thumbnails.default.url})`}} />
         }
         <YouTubePlayer videoId={answer?.snippet?.resourceId?.videoId} opts={opts} onStateChange={() => setOnChangeState(true)} onReady={(e) => handleReady(e.target)} />
       </PlayingContainer>
+      <PlayingTimeProgressContainer>
+        {/* <Box sx={{ width: '50%', backgroundColor: 'red' }}>
+          <PlayingTimeLinearProgress variant="determinate" value={100/TIME_LIMIT*(TIME_LIMIT-timeLeft)} />
+        </Box> */}
+      </PlayingTimeProgressContainer>
       <ButtonContainer>
         {
           !hasPlayed && onPlayer && answer && onChangeState &&
-          <ReadyButton variant="contained" onClick={() => {
-            console.log(answer.snippet.resourceId.videoId);
-            clickReady()
-            }}>
+          <ReadyButton variant="contained" onClick={() => clickPlay()}>
               {onPlay ? 'Playing...' : `Click to play`}
           </ReadyButton>
         }
@@ -172,19 +207,35 @@ const Challenge = () => {
           </RadioGroup>
         }
       </RadioContainer>
-      <ProgressContainer>
+      <ChallengeTimeProgressContainer>
         <Box sx={{ width: '100%' }}>
           <LinearProgress variant="determinate" value={100/TIME_LIMIT*(TIME_LIMIT-timeLeft)} />
         </Box>
-      </ProgressContainer>
+      </ChallengeTimeProgressContainer>
     </>
   );
 };
 
-const ProgressContainer = styled(Box)`
+const PlayingTimeLinearProgress = styled(LinearProgress)`
+  .MuiLinearProgress-barColorPrimary {
+    background-color: grey;
+  }
+`
+
+const PlayingTimeProgressContainer = styled(Box)`
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 5%;
+  max-width: 1000px;
+  padding-top: 10px;
+`
+
+const ChallengeTimeProgressContainer = styled(Box)`
+  display: flex;
+  justify-content: center;
   align-items: end;
-  height: 10%;
+  height: 5%;
   max-width: 1000px;
 `
 

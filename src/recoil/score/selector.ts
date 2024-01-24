@@ -1,12 +1,22 @@
 import { selector } from "recoil";
-import { numberOfAnswerState } from "./atom";
+import { numberOfAHitState, numberOfMissState } from "./atom";
 
-export const numberOfAnswerSelector = selector({
-  key: "numberOfAnswerSelector",
+export const numberOfHitSelector = selector({
+  key: "numberOfHitSelector",
   get: ({get}) => {
-    return get(numberOfAnswerState);
+    return get(numberOfAHitState);
   },
   set: ({set}, newValue: any) => {
-    set(numberOfAnswerState, newValue);
+    set(numberOfAHitState, newValue);
+  }
+})
+
+export const numberOfMissSelector = selector({
+  key: "numberOfMissSelector",
+  get: ({get}) => {
+    return get(numberOfMissState);
+  },
+  set: ({set}, newValue: any) => {
+    set(numberOfMissState, newValue);
   }
 })

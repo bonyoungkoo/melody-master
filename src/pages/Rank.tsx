@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
+import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 
 const Rank = () => {
 
@@ -10,35 +10,40 @@ const Rank = () => {
       <RankContainer>
         <TableContainer component={Paper} sx={{ backgroundColor: '#11161C' }}>
           <Table size="small" aria-label="a dense table">
+            <caption style={{ color: 'grey' }}>Ranking only displays the records of the top 10.</caption>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ color: '#FFFFFF', width: '85%' }}>name</TableCell>
-                <TableCell sx={{ color: '#FFFFFF', width: '5%' }} align="center">correct</TableCell>
-                <TableCell sx={{ color: '#FFFFFF', width: '5%' }} align="center">incorrect</TableCell>
+                <TableCell sx={{ color: '#FFFFFF', width: '5%' }}>#rank</TableCell>
+                <TableCell sx={{ color: '#FFFFFF', width: '80%' }}>name</TableCell>
+                <TableCell sx={{ color: '#FFFFFF', width: '5%' }} align="center">hit</TableCell>
+                <TableCell sx={{ color: '#FFFFFF', width: '5%' }} align="center">miss</TableCell>
                 <TableCell sx={{ color: '#FFFFFF', width: '5%' }} align="center">score</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-                <TableRow
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell sx={{ color: '#FFFFFF' }} align="left">홍길동</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                </TableRow>
-                <TableRow
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell sx={{ color: '#FFFFFF' }} align="left">홍길동</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                  <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
-                </TableRow>
+              {
+                Array(10).fill(null).map((v, i) => 
+                  <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={i}>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{i + 1}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="left">{`홍길동홍길동동${i}`}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{20 - i}</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">1</TableCell>
+                    <TableCell sx={{ color: '#FFFFFF' }} align="center">{10000 - i * 1000}</TableCell>
+                  </TableRow>
+                )
+              }
             </TableBody>
           </Table>
         </TableContainer>
       </RankContainer>
+      <ButtonContainer>
+        <GameButton variant="text" onClick={() => {}}>
+          Enroll My Score
+        </GameButton>
+        <GameButton variant="text" onClick={() => {}}>
+          Go To Main
+        </GameButton>
+      </ButtonContainer>
     </>
   );
 };
@@ -49,6 +54,7 @@ const TitleContainer = styled(Container)`
   justify-content: center;
   align-items: center;
 `
+
 const Title = styled(Box)`
   font-family: "Lemon", serif;
   color: #FFFFFF;
@@ -57,12 +63,28 @@ const Title = styled(Box)`
 `
 
 const RankContainer = styled(Container)`
-  height: 90%;
+  height: 60%;
   background-color: #11161C;
 `
 
 const ButtonContainer = styled(Container)`
-  height: 10%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+const GameButton = styled(Button)`
+  height: 50px;
+  width: 200px;
+  background-color: #FFFFFF;
+  color: #000000;
+  &:hover {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+  margin-top: 12px;
 `
 
 export default Rank;
