@@ -23,6 +23,7 @@ const TextBox = styled(Box)`
 `
 
 const Title = styled(Box)`
+  font-family: "Lemon", serif;
   color: #FFFFFF;
   font-size: 32px;
   font-weight: 700;
