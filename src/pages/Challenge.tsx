@@ -100,25 +100,28 @@ const Challenge = () => {
       }, setDuration(score))
     }
   }, [player, onPlayer, hasPlayed, onPlay, score]);
-
+  
   const clickNext = useCallback(() => {
     if (!onSelect) return;
+
     setOnChangeState(false);
     setHasPlayed(false);
     setOnPlay(false);
     setOnSelect(false);
     player.pauseVideo();
-    setYoutube({
-      initialList: videoList.initialList,
-      currentList: videoList.currentList.toSpliced(videoList.currentList.findIndex((v: any) => v.id === answer.id), 1)
-    });
-    if (answer.snippet.title === value) {
-      setHitScore((prev: number) => prev + 1)
-    } else {
-      setMissScore((prev: number) => prev + 1)
-    }
-    getYoutubeVideo();
-    setValue('');
+    setTimeout(() => {
+      setYoutube({
+        initialList: videoList.initialList,
+        currentList: videoList.currentList.toSpliced(videoList.currentList.findIndex((v: any) => v.id === answer.id), 1)
+      });
+      if (answer.snippet.title === value) {
+        setHitScore((prev: number) => prev + 1)
+      } else {
+        setMissScore((prev: number) => prev + 1)
+      }
+      getYoutubeVideo();
+      setValue('');
+    }, 1000)
 
   }, [player, onSelect, videoList, answer, value]);
 

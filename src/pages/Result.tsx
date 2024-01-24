@@ -59,7 +59,10 @@ const Result = () => {
 
     navigate('/rank', { 
       state: {
-        name: value
+        name: value,
+        hit: numberOfHit,
+        miss: numberOfMiss,
+        score: calculateScore()
       }
     });
 

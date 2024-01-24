@@ -57,9 +57,9 @@ const Rank = () => {
               <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell sx={{ color: 'yellow' }} align="center">-</TableCell>
                 <TableCell sx={{ color: 'yellow' }} align="left">{location.state?.name ?? '-'}</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">10</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">1</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">{1000}</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.hit ?? '-'}</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.miss ?? '-'}</TableCell>
+                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.score ?? '-'}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
