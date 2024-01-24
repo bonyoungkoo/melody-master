@@ -1,4 +1,4 @@
-import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, TextField, styled } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, TextField, styled } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,8 @@ import StarIcon from '@mui/icons-material/Star';
 import axios from "axios";
 
 const Result = () => {
-  const [open, setOpen] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const numberOfHit = useRecoilValue(numberOfAHitState);
   const numberOfMiss = useRecoilValue(numberOfMissState);
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ const Result = () => {
   }, [numberOfHit, numberOfMiss]);
 
   const registerScore = useCallback(async () => {
+    setShowDialog(false);
+    setIsLoading(true);
     const url = import.meta.env.VITE_API_URL;
     const response = await axios({
       url: `${url}/api/rank/register`,
@@ -53,18 +56,20 @@ const Result = () => {
       }
     });
 
-    if (!response.data) {
-      alert('An error occured!')
-    }
+    // setIsLoading(false);
 
-    navigate('/rank', { 
-      state: {
-        name: value,
-        hit: numberOfHit,
-        miss: numberOfMiss,
-        score: calculateScore()
-      }
-    });
+    // if (!response.data) {
+    //   alert('An error occured!')
+    // }
+
+    // navigate('/rank', { 
+    //   state: {
+    //     name: value,
+    //     hit: numberOfHit,
+    //     miss: numberOfMiss,
+    //     score: calculateScore()
+    //   }
+    // });
 
   }, [numberOfHit, numberOfMiss, value]);
 
@@ -89,15 +94,15 @@ const Result = () => {
         <TextBox>{`Total score : ${calculateScore()}`}</TextBox>
       </ScoreContainer>
       <ButtonContainer>
-        <GameButton variant="text" onClick={() => setOpen(true)}>
+        <GameButton variant="text" onClick={() => setShowDialog(true)}>
           Record My Score
         </GameButton>
         <GameButton variant="text" onClick={() => {}}>
           Retry
         </GameButton>
       </ButtonContainer>
-      <Dialog onClose={() => setOpen(false)} open={open}>
-      <DialogTitle>Enter your name</DialogTitle>
+      <Dialog onClose={() => setShowDialog(false)} open={showDialog}>
+        <DialogTitle>Enter your name</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Record score and check your ranking.
@@ -111,9 +116,12 @@ const Result = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => setShowDialog(false)}>Cancel</Button>
           <Button onClick={() => registerScore()}>Record</Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog open={isLoading} sx={{ backgroundColor: 'transparent' }}>
       </Dialog>
     </>
   );

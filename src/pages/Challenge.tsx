@@ -39,6 +39,7 @@ const Challenge = () => {
   }
 
   useEffect(() => {
+    console.log(videoList)
     start();
   }, []);
 

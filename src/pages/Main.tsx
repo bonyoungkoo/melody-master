@@ -12,21 +12,33 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(false);
   const setHitScore = useSetRecoilState(numberOfAHitState);
   const setYoutube = useSetRecoilState(youtubeState);
+  const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId='
+  const YOUTUBE_PLAY_LIST_ID = ['PLberYIcFsD68X_8bqTlwivUWTF4llVlBb', 'PLberYIcFsD69fByqxSVjQzYIPsl9Bs0TA']
+
+  const fetchYoutubeList = async (index: number): Promise<any> => {
+    return new Promise(async (resolve, reject) => {
+      const response: any = await axios({
+        url: `${YOUTUBE_API_URL}${YOUTUBE_PLAY_LIST_ID[index]}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`,
+        method: 'GET',
+      });
+      resolve(response);
+    });
+  };
 
   const onClickGameStartButton = useCallback(async () => {
     setIsLoading(true);
-    const youtubeApiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=PLberYIcFsD68X_8bqTlwivUWTF4llVlBb&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`
-    const response: any = await axios({
-      url: youtubeApiUrl,
-      method: 'get',
-    });
+
+    const response = await Promise.all([
+      fetchYoutubeList(0),
+      fetchYoutubeList(1),
+    ]);
+
     setIsLoading(false);
     setYoutube({
-      initialList: response.data.items,
-      currentList: response.data.items
+      initialList: [...response[0].data.items, ...response[1].data.items],
+      currentList: [...response[0].data.items, ...response[1].data.items],
     });
     setHitScore(0);
-    console.log(response);
     navigate('/challenge');
   }, [])
 
