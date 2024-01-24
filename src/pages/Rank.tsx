@@ -1,10 +1,11 @@
 import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Rank = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [rankData, setRankData] = useState([]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const Rank = () => {
         {/* <GameButton variant="text" onClick={() => {}}>
           Enroll My Score
         </GameButton> */}
-        <GameButton variant="text" onClick={() => {}}>
+        <GameButton variant="text" onClick={() => navigate('/')}>
           Go To Main
         </GameButton>
       </ButtonContainer>
