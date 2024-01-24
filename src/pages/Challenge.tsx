@@ -39,11 +39,6 @@ const Challenge = () => {
   }
 
   useEffect(() => {
-    console.log('score', score);
-    console.log('onChangeState', onChangeState);
-  }, []);
-
-  useEffect(() => {
     start();
   }, []);
 
@@ -60,7 +55,6 @@ const Challenge = () => {
   }, [])
 
   const getYoutubeVideo = useCallback(() => {
-    console.log(videoList)
     const randomList = getRandomIntegerList(5).map((v) => videoList.currentList[v]);
     setChoiceList(randomList.map((v) => v.snippet.title));
     const randomInteger = getRandomInteger(5);

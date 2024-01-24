@@ -8,17 +8,15 @@ const Rank = () => {
   const [rankData, setRankData] = useState([]);
 
   useEffect(() => {
-    console.log(location.state?.name);
     getRanking();
   }, []);
 
   const getRanking = useCallback(async () => {
     const url = import.meta.env.VITE_API_URL;
     const response = await axios({
-      url: `${url}/rank/list`,
+      url: `${url}/api/rank/list`,
       method: 'get',
     });
-    console.log(response);
     if (!response.data) {
       alert('An error occured!')
     }
@@ -45,9 +43,7 @@ const Rank = () => {
             </TableHead>
             <TableBody>
               {
-                rankData?.length && 
                 rankData.map((v: any, i: number) => 
-                // Array(10).fill(null).map((v, i) => 
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={i}>
                     <TableCell sx={{ color: '#FFFFFF' }} align="center">{i + 1}</TableCell>
                     <TableCell sx={{ color: '#FFFFFF' }} align="left">{v.name}</TableCell>
