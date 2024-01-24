@@ -42,7 +42,7 @@ const Result = () => {
   const registerScore = useCallback(async () => {
     const url = import.meta.env.VITE_API_URL;
     const response = await axios({
-      url: `${url}/register`,
+      url: `${url}/api/rank/register`,
       method: 'post',
       data: {
         name: value,

@@ -15,7 +15,7 @@ const Rank = () => {
   const getRanking = useCallback(async () => {
     const url = import.meta.env.VITE_API_URL;
     const response = await axios({
-      url,
+      url: `${url}/rank/list`,
       method: 'get',
     });
     console.log(response);
