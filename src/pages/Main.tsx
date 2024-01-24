@@ -1,19 +1,25 @@
 import { Box, Button, styled } from "@mui/material";
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import Logo from '../assets/vinyl_logo.png';
-import { numberOfAHitState } from "../recoil/score/atom";
+import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
 import { youtubeState } from "../recoil/youtube/atom";
 
 const Main = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const setHitScore = useSetRecoilState(numberOfAHitState);
+  const setMissScore = useSetRecoilState(numberOfMissState);
   const setYoutube = useSetRecoilState(youtubeState);
   const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId='
   const YOUTUBE_PLAY_LIST_ID = ['PLberYIcFsD68X_8bqTlwivUWTF4llVlBb', 'PLberYIcFsD69fByqxSVjQzYIPsl9Bs0TA']
+
+  useEffect(() => {
+    setMissScore(0);
+    setHitScore(0);
+  }, []);
 
   const fetchYoutubeList = async (index: number): Promise<any> => {
     return new Promise(async (resolve, reject) => {
@@ -38,7 +44,6 @@ const Main = () => {
       initialList: [...response[0].data.items, ...response[1].data.items],
       currentList: [...response[0].data.items, ...response[1].data.items],
     });
-    setHitScore(0);
     navigate('/challenge');
   }, [])
 
@@ -49,12 +54,17 @@ const Main = () => {
         <MainLogoText>Melody Master</MainLogoText>
       </MainLogoContainer>
       <ButtonContainer>
-          <GameStartButton 
-            variant="text" 
-            disabled={isLoading}
-            onClick={onClickGameStartButton}>
-            <span>{isLoading ? 'Loading...' : 'Game Start'}</span>
-          </GameStartButton>
+        <GameStartButton 
+          variant="text" 
+          disabled={isLoading}
+          onClick={onClickGameStartButton}>
+          <span>{isLoading ? 'Loading...' : 'Game Start'}</span>
+        </GameStartButton>
+        <GameStartButton 
+          variant="text" 
+          onClick={() => navigate('/rank')}>
+          <span>{'View Rank Board'}</span>
+        </GameStartButton>
       </ButtonContainer>
     </>
   );
@@ -93,6 +103,7 @@ const MainLogoText = styled(Box)`
 const ButtonContainer = styled(Box)`
   height: 30%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `
@@ -106,6 +117,7 @@ const GameStartButton = styled(Button)`
     background-color: #000000;
     color: #FFFFFF;
   }
+  margin-top: 12px;
 `
 
 export default Main;

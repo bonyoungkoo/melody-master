@@ -54,13 +54,16 @@ const Rank = () => {
                   </TableRow>
                 )
               }
-              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell sx={{ color: 'yellow' }} align="center">-</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="left">{location.state?.name ?? '-'}</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.hit ?? '-'}</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.miss ?? '-'}</TableCell>
-                <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.score ?? '-'}</TableCell>
-              </TableRow>
+              {
+                location.state &&
+                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell sx={{ color: 'yellow' }} align="center">-</TableCell>
+                  <TableCell sx={{ color: 'yellow' }} align="left">{location.state?.name ?? '-'}</TableCell>
+                  <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.hit ?? '-'}</TableCell>
+                  <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.miss ?? '-'}</TableCell>
+                  <TableCell sx={{ color: 'yellow' }} align="center">{location.state?.score ?? '-'}</TableCell>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </TableContainer>
