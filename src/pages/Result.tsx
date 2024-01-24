@@ -40,13 +40,25 @@ const Result = () => {
   }, [numberOfHit, numberOfMiss]);
 
   const registerScore = useCallback(async () => {
-    console.log(value)
     const url = import.meta.env.VITE_API_URL;
-    const response: any = await axios({
-      url,
-      method: 'get',
+    const response = await axios({
+      url: `${url}/register`,
+      method: 'post',
+      data: {
+        name: value,
+        hit: numberOfHit,
+        miss: numberOfMiss,
+        level: numberOfHit > 12 ? 5 : Math.floor(numberOfHit/3) + 1,
+        score: calculateScore()
+      }
     });
-    console.log(response)
+
+    if (!response.data) {
+      alert('An error occured!')
+    }
+
+    navigate('/rank')
+
   }, [numberOfHit, numberOfMiss, value]);
 
   return (

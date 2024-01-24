@@ -1,6 +1,25 @@
 import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
+import axios from 'axios';
+import { useCallback, useEffect } from 'react';
 
 const Rank = () => {
+
+  useEffect(() => {
+    getRanking();
+  }, []);
+
+  const getRanking = useCallback(async () => {
+    const url = import.meta.env.VITE_API_URL;
+    const response = await axios({
+      url,
+      method: 'get',
+    });
+    console.log(response);
+    if (!response.data) {
+      alert('An error occured!')
+    }
+
+  }, []);
 
   return (
     <>
