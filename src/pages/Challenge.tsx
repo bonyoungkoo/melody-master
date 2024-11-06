@@ -25,9 +25,9 @@ const Challenge = () => {
   const hitScore = useRecoilValue(numberOfAHitState);
   const setHitScore = useSetRecoilState(numberOfAHitState);
   const setMissScore = useSetRecoilState(numberOfMissSelector);
-  const [player, setPlayer] = useState();
+  const [player, setPlayer] = useState<any>();
   const [value, setValue] = useState<string>('');
-  const [answer, setAnswer] = useState();
+  const [answer, setAnswer] = useState<any>();
   const [choiceList, setChoiceList] = useState<string[]>();
   const opts = {
     playerVars: {
