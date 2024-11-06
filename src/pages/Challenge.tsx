@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import VinylIcon from "../assets/vinyl_plain.png";
+import VinylIcon from "../assets/images/vinyl_plain.png";
 import { useCountdown } from "../hooks/useCountdown";
 import { youtubeState } from "../recoil/youtube/atom";
 import { numberOfAHitState } from "../recoil/score/atom";

@@ -1,12 +1,12 @@
-import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, styled } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, styled } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
 import axios from "axios";
-import { Title } from "@mui/icons-material";
 import BasicButton from "../components/BasicButton";
 import StarRating from "../components/StarRating";
 import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
+import Title from "../components/Title";
 
 const Result = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -102,8 +102,12 @@ const Result = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isLoading} sx={{ backgroundColor: 'transparent' }}>
-      </Dialog>
+      <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
