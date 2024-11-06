@@ -3,13 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import VinylIcon from "../assets/images/vinyl_plain.png";
-import { useCountdown } from "../hooks/useCountdown";
-import { youtubeState } from "../recoil/youtube/atom";
-import { numberOfAHitState } from "../recoil/score/atom";
-import { numberOfMissSelector } from "../recoil/score/selector";
-import BasicButton from "../components/BasicButton";
-import StarRating from "../components/StarRating";
+import VinylIcon from "assets/images/vinyl_plain.png";
+import BasicButton from "src/components/BasicButton";
+import StarRating from "src/components/StarRating";
+import { useCountdown } from "src/hooks/useCountdown";
+import { numberOfAHitState } from "src/recoil/score/atom";
+import { numberOfMissSelector } from "src/recoil/score/selector";
+import { youtubeState } from "src/recoil/youtube/atom";
 
 const Challenge = () => {
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ const Challenge = () => {
         setHasPlayed(true);
       }, setDuration(hitScore))
     }
-  }, [player, onPlayer, hasPlayed, onPlay, hitScore]);
+  }, [hasPlayed, onPlay, player, setDuration, hitScore]);
   
   const clickNext = useCallback(() => {
     if (!onSelect) return;
@@ -125,7 +125,7 @@ const Challenge = () => {
       setValue('');
     }, 1000)
 
-  }, [player, onSelect, videoList, answer, value]);
+  }, [onSelect, player, value, getYoutubeVideo, setHitScore, setMissScore]);
 
   return (
     <>

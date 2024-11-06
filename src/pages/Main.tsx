@@ -1,12 +1,12 @@
 import { Box, Menu, MenuItem, styled } from "@mui/material";
 import axios from "axios";
-import Logo from "../assets/images/vinyl_logo.png";
+import Logo from "assets/images/vinyl_logo.png";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import BasicButton from "../components/BasicButton";
-import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
-import { youtubeState } from "../recoil/youtube/atom";
+import { numberOfAHitState, numberOfMissState } from "src/recoil/score/atom";
+import BasicButton from "src/components/BasicButton";
+import { youtubeState } from "src/recoil/youtube/atom";
 
 const Main = () => {
   const navigate = useNavigate();

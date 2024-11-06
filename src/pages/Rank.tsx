@@ -1,24 +1,27 @@
-import { Box, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
+import { Backdrop, Box, CircularProgress, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import BasicButton from '../components/BasicButton';
+import BasicButton from 'src/components/BasicButton';
 
 const Rank = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [rankData, setRankData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getRanking();
   }, []);
 
   const getRanking = useCallback(async () => {
+    setIsLoading(true)
     const url = import.meta.env.VITE_API_URL;
     const response = await axios({
       url: `${url}/api/rank/list`,
       method: 'get',
     });
+    setIsLoading(false)
     if (!response.data) {
       alert('An error occured!')
     }
@@ -85,6 +88,12 @@ const Rank = () => {
           Go To Main
         </BasicButton>
       </ButtonContainer>
+      <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
