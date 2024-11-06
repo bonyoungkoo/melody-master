@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <RecoilRoot>
-        <BrowserRouter>
+        <BrowserRouter basename="/melody-master" >
           <Routes>
             <Route path="/" element={<Layout page={<Main />} />} />
             <Route path="/challenge" element={<Layout page={<Challenge />} />} />

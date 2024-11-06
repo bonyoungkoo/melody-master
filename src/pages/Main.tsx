@@ -113,7 +113,7 @@ const GenreMenu = styled(MenuItem)`
 `
 
 const MainLogoContainer = styled(Box)`
-  height: 70%;
+  height: 65%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,8 +123,8 @@ const MainLogoContainer = styled(Box)`
 
 const MainLogoIcon = styled(Box)`
   /* border-radius: 50%; */
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   background-image: url(${Logo});
   background-size: cover;
 `
