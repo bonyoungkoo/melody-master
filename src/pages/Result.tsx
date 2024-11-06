@@ -2,7 +2,6 @@ import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogCon
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
-import StarIcon from '@mui/icons-material/Star';
 import axios from "axios";
 import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
 import Title from "@/components/Title";
@@ -17,28 +16,6 @@ const Result = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState('');
  
-  const setColor = useCallback((score: number) => {
-    let color = '#ff1744';
-    switch (Math.floor(score/3)) {
-      case 0:
-        color = '#ffc107' 
-        break;
-      case 1:
-        color = '#ff9800' 
-        break;
-      case 2:
-        color = '#ff5722' 
-        break;
-      case 3:
-        color = '#f44336' 
-        break;
-      case 4:
-        color = '#ff1744' 
-        break;
-    }
-    return color;
-  }, []);
-
   const calculateScore = useCallback(() => {
     return (numberOfHit*100) - (numberOfMiss*50);
   }, [numberOfHit, numberOfMiss]);

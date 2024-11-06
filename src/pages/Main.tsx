@@ -1,11 +1,11 @@
-import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
-import { youtubeState } from "@/recoil/youtube/atom";
 import { Box, Menu, MenuItem, styled } from "@mui/material";
 import axios from "axios";
 import Logo from "@/assets/vinyl_logo.png";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
+import { youtubeState } from "@/recoil/youtube/atom";
 import BasicButton from "@/components/BasicButton";
 
 const Main = () => {

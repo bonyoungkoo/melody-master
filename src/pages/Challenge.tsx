@@ -1,5 +1,4 @@
-import StarIcon from '@mui/icons-material/Star';
-import { Box, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
+import { Box, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, keyframes, styled } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
