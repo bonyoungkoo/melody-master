@@ -3,10 +3,10 @@ import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
 import axios from "axios";
-import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
-import Title from "@/components/Title";
-import BasicButton from "@/components/BasicButton";
-import StarRating from "@/components/StarRating";
+import { numberOfAHitState, numberOfMissState } from "recoil/score/atom";
+import Title from "components/Title";
+import BasicButton from "components/BasicButton";
+import StarRating from "components/StarRating";
 
 const Result = () => {
   const [showDialog, setShowDialog] = useState(false);

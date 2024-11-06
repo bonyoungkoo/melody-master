@@ -1,15 +1,15 @@
 import { Box, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, keyframes, styled } from "@mui/material";
+import BasicButton from "components/BasicButton";
+import StarRating from "components/StarRating";
+import { useCountdown } from "hooks/useCountdown";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import VinylIcon from '@/assets/vinyl_plain.png';
-import { useCountdown } from '@/hooks/useCountdown';
-import { numberOfAHitState } from '@/recoil/score/atom';
-import { youtubeState } from '@/recoil/youtube/atom';
-import { numberOfMissSelector } from '@/recoil/score/selector';
-import BasicButton from '@/components/BasicButton';
-import StarRating from '@/components/StarRating';
+import { numberOfAHitState } from "recoil/score/atom";
+import { numberOfMissSelector } from "recoil/score/selector";
+import { youtubeState } from "recoil/youtube/atom";
+import VinylIcon from "assets/vinyl_plain.png";
 
 const Challenge = () => {
   const navigate = useNavigate();

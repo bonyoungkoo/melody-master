@@ -1,10 +1,10 @@
+import Layout from 'layouts/Layout'
+import Challenge from 'pages/Challenge'
+import Main from 'pages/Main'
+import Rank from 'pages/Rank'
+import Result from 'pages/Result'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
-import Challenge from '@/pages/Challenge'
-import Main from '@/pages/Main'
-import Result from '@/pages/Result'
-import Rank from '@/pages/Rank'
-import Layout from '@/layouts/Layout'
 
 function App() {
   return (
