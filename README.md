@@ -4,7 +4,7 @@
 음악을 듣고 제목을 맞추는 게임.
 
 ## Project URL
-<a href="https://dugout.kro.kr/melody-master" target="_blank">
+<a href="https://dugout.kro.kr/melody-master" target="_blank">https://dugout.kro.kr/melody-master</a>
 
 ## Tech Stack
 
