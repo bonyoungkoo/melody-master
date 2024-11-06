@@ -1,15 +1,15 @@
 import { Box, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, keyframes, styled } from "@mui/material";
-import BasicButton from "@components/BasicButton";
-import StarRating from "@components/StarRating";
-import { useCountdown } from "@hooks/useCountdown";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { numberOfAHitState } from "@recoil/score/atom";
-import { numberOfMissSelector } from "@recoil/score/selector";
-import { youtubeState } from "@recoil/youtube/atom";
-import VinylIcon from "@assets/vinyl_plain.png";
+import VinylIcon from "../assets/vinyl_plain.png";
+import { useCountdown } from "../hooks/useCountdown";
+import { youtubeState } from "../recoil/youtube/atom";
+import { numberOfAHitState } from "../recoil/score/atom";
+import { numberOfMissSelector } from "../recoil/score/selector";
+import BasicButton from "../components/BasicButton";
+import StarRating from "../components/StarRating";
 
 const Challenge = () => {
   const navigate = useNavigate();
@@ -25,9 +25,9 @@ const Challenge = () => {
   const hitScore = useRecoilValue(numberOfAHitState);
   const setHitScore = useSetRecoilState(numberOfAHitState);
   const setMissScore = useSetRecoilState(numberOfMissSelector);
-  const [player, setPlayer] = useState<any>();
+  const [player, setPlayer] = useState();
   const [value, setValue] = useState<string>('');
-  const [answer, setAnswer] = useState<any>();
+  const [answer, setAnswer] = useState();
   const [choiceList, setChoiceList] = useState<string[]>();
   const opts = {
     playerVars: {
@@ -78,7 +78,7 @@ const Challenge = () => {
     return result;
   }
 
-  const handleReady = useCallback((target: any) => {
+  const handleReady = useCallback((target) => {
     setPlayer(target);
     setOnPlayer(true);
   }, []);
