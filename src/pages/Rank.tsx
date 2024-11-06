@@ -1,4 +1,5 @@
-import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
+import BasicButton from '@/components/BasicButton';
+import { Box, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,10 +25,18 @@ const Rank = () => {
     setRankData(response.data);
   }, []);
 
+  interface Rank {
+    name: string;
+    hit: string;
+    score: string;
+    miss: string;
+    level: string;
+  }
+
   return (
     <>
       <TitleContainer>
-          <Title>Ranking</Title>
+        <Title>Ranking</Title>
       </TitleContainer>
       <RankContainer>
         <TableContainer component={Paper} sx={{ backgroundColor: '#11161C' }}>
@@ -44,7 +53,7 @@ const Rank = () => {
             </TableHead>
             <TableBody>
               {
-                rankData.map((v: any, i: number) => 
+                rankData.map((v: Rank, i: number) => 
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={i}>
                     <TableCell sx={{ color: '#FFFFFF' }} align="center">{i + 1}</TableCell>
                     <TableCell sx={{ color: '#FFFFFF' }} align="left">{v.name}</TableCell>
@@ -72,9 +81,9 @@ const Rank = () => {
         {/* <GameButton variant="text" onClick={() => {}}>
           Enroll My Score
         </GameButton> */}
-        <GameButton variant="text" onClick={() => navigate('/')}>
+        <BasicButton onClick={() => navigate('/')}>
           Go To Main
-        </GameButton>
+        </BasicButton>
       </ButtonContainer>
     </>
   );
@@ -105,18 +114,6 @@ const ButtonContainer = styled(Container)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
-
-const GameButton = styled(Button)`
-  height: 50px;
-  width: 200px;
-  background-color: #FFFFFF;
-  color: #000000;
-  &:hover {
-    background-color: #000000;
-    color: #FFFFFF;
-  }
-  margin-top: 12px;
 `
 
 export default Rank;

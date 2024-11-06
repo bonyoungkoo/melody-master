@@ -1,10 +1,13 @@
-import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, TextField, styled } from "@mui/material";
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, TextField, styled } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import StarIcon from '@mui/icons-material/Star';
 import axios from "axios";
+import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
+import Title from "@/components/Title";
+import BasicButton from "@/components/BasicButton";
+import StarRating from "@/components/StarRating";
 
 const Result = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -80,26 +83,27 @@ const Result = () => {
       </TitleContainer>
       <ScoreContainer>
         <TextBox sx={{ display: 'flex', alignItems: 'center' }}>
-          {`Max level : `}
-          <Rating 
+          {`Max level`}&nbsp;
+          <StarRating value={numberOfHit < 13 ? Math.floor(numberOfHit/3) + 1 : 5}/>
+          {/* <Rating 
             name="read-only" 
-            value={numberOfHit > 12 ? 5 : Math.floor(numberOfHit/3) + 1} 
-            max={numberOfHit > 12 ? 5 : Math.floor(numberOfHit/3) + 1}
+            value={Math.floor(numberOfHit/3) + 1} 
+            max={5}
             readOnly
             icon={<StarIcon fontSize="inherit" sx={{ color: setColor(numberOfHit) }} />}
-            size={"large"} />
+            size={"large"} /> */}
           </TextBox>
         <TextBox>{`Hit : ${numberOfHit}`}</TextBox>
         <TextBox>{`Miss : ${numberOfMiss}`}</TextBox>
         <TextBox>{`Total score : ${calculateScore()}`}</TextBox>
       </ScoreContainer>
       <ButtonContainer>
-        <GameButton variant="text" onClick={() => setShowDialog(true)}>
+        <BasicButton onClick={() => setShowDialog(true)}>
           Record My Score
-        </GameButton>
-        <GameButton variant="text" onClick={() => {}}>
-          Retry
-        </GameButton>
+        </BasicButton>
+        <BasicButton onClick={() => navigate('/')}>
+          Go To Main
+        </BasicButton>
       </ButtonContainer>
       <Dialog onClose={() => setShowDialog(false)} open={showDialog}>
         <DialogTitle>Enter your name</DialogTitle>
@@ -134,14 +138,8 @@ const TextBox = styled(Box)`
   padding: 24px 0;
 `
 
-const Title = styled(Box)`
-  font-family: "Lemon", serif;
-  color: #FFFFFF;
-  font-size: 32px;
-  font-weight: 700;
-`
-
 const ScoreContainer = styled(Container)`
+  font-family: "Lemon", serif;
   height: 60%;
   display: flex;
   flex-direction: column;
@@ -162,18 +160,6 @@ const ButtonContainer = styled(Container)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
-
-const GameButton = styled(Button)`
-  height: 50px;
-  width: 200px;
-  background-color: #FFFFFF;
-  color: #000000;
-  &:hover {
-    background-color: #000000;
-    color: #FFFFFF;
-  }
-  margin-top: 12px;
 `
 
 export default Result;

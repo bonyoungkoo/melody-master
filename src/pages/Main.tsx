@@ -1,51 +1,70 @@
-import { Box, Button, styled } from "@mui/material";
+import { numberOfAHitState, numberOfMissState } from "@/recoil/score/atom";
+import { youtubeState } from "@/recoil/youtube/atom";
+import { Box, Menu, MenuItem, styled } from "@mui/material";
 import axios from "axios";
+import Logo from "@/assets/vinyl_logo.png";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import Logo from '../assets/vinyl_logo.png';
-import { numberOfAHitState, numberOfMissState } from "../recoil/score/atom";
-import { youtubeState } from "../recoil/youtube/atom";
+import BasicButton from "@/components/BasicButton";
 
 const Main = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [genre, setGenre] = useState('KPOP');
   const setHitScore = useSetRecoilState(numberOfAHitState);
   const setMissScore = useSetRecoilState(numberOfMissState);
   const setYoutube = useSetRecoilState(youtubeState);
   const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId='
-  const YOUTUBE_PLAY_LIST_ID = ['PLberYIcFsD68X_8bqTlwivUWTF4llVlBb', 'PLberYIcFsD69fByqxSVjQzYIPsl9Bs0TA']
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const GENRE_LIST = ['KPOP', 'CLASSIC']
+  const YOUTUBE_PLAY_LIST_ID: {[key: string]: string[]} = {
+    KPOP: ['PLberYIcFsD68X_8bqTlwivUWTF4llVlBb', 'PLberYIcFsD69fByqxSVjQzYIPsl9Bs0TA'],
+    CLASSIC: ['PLberYIcFsD6-8T7Zx5BZuDsK0D5JXWMrw']
+  }
 
   useEffect(() => {
     setMissScore(0);
     setHitScore(0);
   }, []);
 
-  const fetchYoutubeList = async (index: number): Promise<any> => {
-    return new Promise(async (resolve, reject) => {
-      const response: any = await axios({
-        url: `${YOUTUBE_API_URL}${YOUTUBE_PLAY_LIST_ID[index]}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`,
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const getPlayList = async (id: string): Promise<any> => {
+    const promise = new Promise(resolve => {
+      const response = axios({
+        url: `${YOUTUBE_API_URL}${id}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`,
         method: 'GET',
       });
       resolve(response);
     });
+    return promise.then(response => response)
   };
+
+  const onClickGenre = useCallback((genre: string) => {
+    setGenre(genre)
+    handleClose()
+  }, [])
 
   const onClickGameStartButton = useCallback(async () => {
     setIsLoading(true);
-
-    const response = await Promise.all([
-      fetchYoutubeList(0),
-      fetchYoutubeList(1),
-    ]);
+    console.log('check', genre)
+    const response = await Promise.all(YOUTUBE_PLAY_LIST_ID[genre].map(v => getPlayList(v)))
 
     setIsLoading(false);
     setYoutube({
-      initialList: [...response[0].data.items, ...response[1].data.items],
-      currentList: [...response[0].data.items, ...response[1].data.items],
+      initialList: [...response.map(v => v.data.items).flat()],
+      currentList: [...response.map(v => v.data.items).flat()],
     });
     navigate('/challenge');
-  }, [])
+  }, [genre])
 
   return (
     <>
@@ -54,21 +73,44 @@ const Main = () => {
         <MainLogoText>Melody Master</MainLogoText>
       </MainLogoContainer>
       <ButtonContainer>
-        <GameStartButton 
-          variant="text" 
+        <BasicButton 
+          onClick={handleClick}>
+          <span>Genre : {genre}</span>
+        </BasicButton>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+        {
+          GENRE_LIST.map(v => <GenreMenu key={v} onClick={() => onClickGenre(v)}>{v}</GenreMenu>)
+        }
+      </Menu>
+        <BasicButton 
           disabled={isLoading}
           onClick={onClickGameStartButton}>
           <span>{isLoading ? 'Loading...' : 'Game Start'}</span>
-        </GameStartButton>
-        <GameStartButton 
-          variant="text" 
+        </BasicButton>
+        <BasicButton 
           onClick={() => navigate('/rank')}>
           <span>{'View Rank Board'}</span>
-        </GameStartButton>
+        </BasicButton>
       </ButtonContainer>
     </>
   );
 };
+
+const GenreMenu = styled(MenuItem)`
+  height: 50px;
+  width: 200px;
+  font-size: 14px;
+  color: black;
+  font-weight: 400;
+`
 
 const MainLogoContainer = styled(Box)`
   height: 70%;
@@ -106,18 +148,6 @@ const ButtonContainer = styled(Box)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
-
-const GameStartButton = styled(Button)`
-  height: 50px;
-  width: 200px;
-  background-color: #FFFFFF;
-  color: #000000;
-  &:hover {
-    background-color: #000000;
-    color: #FFFFFF;
-  }
-  margin-top: 12px;
 `
 
 export default Main;

@@ -1,19 +1,21 @@
 import StarIcon from '@mui/icons-material/Star';
-import { Box, Button, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
+import { Box, Container, FormControlLabel, LinearProgress, Radio, RadioGroup, Rating, keyframes, styled } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import YouTube from "react-youtube";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import VinylIcon from '../assets/vinyl_plain.png';
-import { useCountdown } from '../hooks/useCountdown';
-import { numberOfAHitState } from '../recoil/score/atom';
-import { youtubeState } from "../recoil/youtube/atom";
-import { numberOfMissSelector } from '../recoil/score/selector';
+import VinylIcon from '@/assets/vinyl_plain.png';
+import { useCountdown } from '@/hooks/useCountdown';
+import { numberOfAHitState } from '@/recoil/score/atom';
+import { youtubeState } from '@/recoil/youtube/atom';
+import { numberOfMissSelector } from '@/recoil/score/selector';
+import BasicButton from '@/components/BasicButton';
+import StarRating from '@/components/StarRating';
 
 const Challenge = () => {
   const navigate = useNavigate();
   const TIME_LIMIT = 1500;
-  const {timeLeft, start, stop, reset} = useCountdown(TIME_LIMIT);
+  const {timeLeft, start, stop} = useCountdown(TIME_LIMIT);
   const [onPlayer, setOnPlayer] = useState(false);
   const [onChangeState, setOnChangeState] = useState(false);
   const [onPlay, setOnPlay] = useState(false);
@@ -21,7 +23,7 @@ const Challenge = () => {
   const [onSelect, setOnSelect] = useState(false);
   const videoList = useRecoilValue(youtubeState);
   const setYoutube = useSetRecoilState(youtubeState);
-  const score = useRecoilValue(numberOfAHitState);
+  const hitScore = useRecoilValue(numberOfAHitState);
   const setHitScore = useSetRecoilState(numberOfAHitState);
   const setMissScore = useSetRecoilState(numberOfMissSelector);
   const [player, setPlayer] = useState<any>();
@@ -82,11 +84,11 @@ const Challenge = () => {
     setOnPlayer(true);
   }, []);
 
-  const setDuration = useCallback((score: number) => {
-    if (score/3 >= 4) {
-      return 1000 - (score/3*50);
+  const setDuration = useCallback((hitScore: number) => {
+    if (hitScore/3 >= 4) {
+      return 2000 - (hitScore/3*50);
     }
-    return 5000 - (score/3)*1000;
+    return 7000 - (hitScore/3)*1000;
   }, []);
 
   const clickPlay = useCallback(() => {
@@ -98,9 +100,9 @@ const Challenge = () => {
         player.pauseVideo();
         setOnPlay(false);
         setHasPlayed(true);
-      }, setDuration(score))
+      }, setDuration(hitScore))
     }
-  }, [player, onPlayer, hasPlayed, onPlay, score]);
+  }, [player, onPlayer, hasPlayed, onPlay, hitScore]);
   
   const clickNext = useCallback(() => {
     if (!onSelect) return;
@@ -126,39 +128,10 @@ const Challenge = () => {
 
   }, [player, onSelect, videoList, answer, value]);
 
-  const setColor = useCallback((score: number) => {
-    let color = '#ff1744';
-    switch (Math.floor(score/3)) {
-      case 0:
-        color = '#ffc107' 
-        break;
-      case 1:
-        color = '#ff9800' 
-        break;
-      case 2:
-        color = '#ff5722' 
-        break;
-      case 3:
-        color = '#f44336' 
-        break;
-      case 4:
-        color = '#ff1744' 
-        break;
-    }
-    return color;
-  }, [score]);
-
   return (
     <>
       <RatingContainer>
-        <Rating 
-          name="read-only" 
-          value={Math.floor(score/3) + 1} 
-          max={5}
-          icon={<StarIcon fontSize="inherit" sx={{ color: setColor(score) }} />}
-          emptyIcon={<EmptyStartIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-          readOnly
-          size={"large"} />
+        <StarRating value={Math.floor(hitScore/3) + 1} />
       </RatingContainer>
       <PlayingContainer>
         <PlayingIcon sx={{ animationPlayState: onPlay ? '' : 'paused' }} onClick={() => console.log(onPlayer, onChangeState, onPlay, hasPlayed, onSelect)} />
@@ -176,13 +149,13 @@ const Challenge = () => {
       <ButtonContainer>
         {
           !hasPlayed && onPlayer && answer && onChangeState &&
-          <ReadyButton variant="contained" onClick={() => clickPlay()}>
+          <BasicButton onClick={() => clickPlay()}>
               {onPlay ? 'Playing...' : `Click to play`}
-          </ReadyButton>
+          </BasicButton>
         }
 
         {
-          onSelect && <NextButton onClick={() => clickNext()}>Click to next</NextButton>
+          onSelect && <BasicButton onClick={() => clickNext()}>Click to next</BasicButton>
         }
       </ButtonContainer>
       <RadioContainer>
@@ -214,11 +187,11 @@ const Challenge = () => {
   );
 };
 
-const PlayingTimeLinearProgress = styled(LinearProgress)`
-  .MuiLinearProgress-barColorPrimary {
-    background-color: grey;
-  }
-`
+// const PlayingTimeLinearProgress = styled(LinearProgress)`
+//   .MuiLinearProgress-barColorPrimary {
+//     background-color: grey;
+//   }
+// `
 
 const PlayingTimeProgressContainer = styled(Box)`
   display: flex;
@@ -259,34 +232,8 @@ const ButtonContainer = styled(Container)`
   align-items: center;
 `
 
-const NextButton = styled(Button)`
-  width: 200px;
-  text-align: center;
-  background-color: #FFFFFF;
-  color: #000000;
-  &:hover {
-    background-color: #000000;
-    color: #FFFFFF;
-  }
-`
-
-const ReadyButton = styled(Button)`
-  width: 200px;
-  text-align: center;
-  background-color: #FFFFFF;
-  color: #000000;
-  &:hover {
-    background-color: #000000;
-    color: #FFFFFF;
-  }
-`
-
 const YouTubePlayer = styled(YouTube)`
   display: none;
-`
-
-const EmptyStartIcon = styled(StarIcon)`
-  color: grey;
 `
 
 const PlayingContainer = styled(Container)`
