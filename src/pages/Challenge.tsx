@@ -78,7 +78,7 @@ const Challenge = () => {
     return result;
   }
 
-  const handleReady = useCallback((target) => {
+  const handleReady = useCallback((target: any) => {
     setPlayer(target);
     setOnPlayer(true);
   }, []);
